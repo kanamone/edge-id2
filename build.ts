@@ -52,7 +52,7 @@ const files = [
             await (
                 await Bun.build({
                     entrypoints: ['define.ts'],
-                    minify: false,
+                    minify: true,
                 })
             ).outputs[0].text()
         )
@@ -63,7 +63,7 @@ const files = [
             await (
                 await Bun.build({
                     entrypoints: ['format.ts'],
-                    minify: false,
+                    minify: true,
                 })
             ).outputs[0].text()
         )
@@ -75,7 +75,7 @@ const files = [
                 await Bun.build({
                     entrypoints: ['index.ts'],
                     external: ['./define', './format'],
-                    minify: false,
+                    minify: true,
                 })
             ).outputs[0].text()
         )
