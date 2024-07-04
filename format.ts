@@ -5,7 +5,7 @@ export type Pattern = {
 
 export type Format = Pattern[];
 
-export function format(
+export function createFormat(
     template: string,
     definitions: { [key: string]: string },
     compress: boolean,

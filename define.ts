@@ -4,7 +4,7 @@ export type ConverterOptions = {
 	format: Format;
 };
 
-export function define(options: ConverterOptions) {
+export function defineID(options: ConverterOptions) {
 	const sequence: string[][] = [];
 	for (let i = 0; i < options.format.length; i++) {
 		const f = options.format[i];

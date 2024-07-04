@@ -1,9 +1,9 @@
-import { define } from "./define";
-import { format } from "./format";
+import { defineID } from "./define";
+import { createFormat } from "./format";
 
 describe("define", () => {
-    const id2 = define({
-        format: format('XXXX', {
+    const id2 = defineID({
+        format: createFormat('XXXX', {
             X: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         }, false),
     })

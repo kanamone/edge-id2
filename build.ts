@@ -1,10 +1,11 @@
 import { mkdirSync, writeFileSync } from 'node:fs'
 
 mkdirSync('lib', { recursive: true })
+mkdirSync('dist', { recursive: true })
 
 const files = [
     [
-        'lib/define.js',
+        'dist/define.js',
         (
             await (
                 await Bun.build({
@@ -25,7 +26,7 @@ const files = [
             .trim(),
     ],
     [
-        'lib/format.js',
+        'dist/format.js',
         (
             await (
                 await Bun.build({
@@ -45,12 +46,24 @@ const files = [
             .replace(/export \{[^}]+\};$/m, '')
             .trim(),
     ],
+    [
+        'lib/index.js',
+        (
+            await (
+                await Bun.build({
+                    entrypoints: ['index.ts'],
+                    external: ['./define', './format'],
+                    minify: false,
+                })
+            ).outputs[0].text()
+        )
+    ],
 ]
 
 for (const [file, content] of files) {
     writeFileSync(file, content)
 }
 
-const readme = files.map(([file, content]) => `## ${file}\n\`\`\`js\n${content}\n\`\`\``).join('\n\n')
+const readme = files.filter(([f]) => f.startsWith('dist')).map(([file, content]) => `## ${file}\n\`\`\`js\n${content}\n\`\`\``).join('\n\n')
 
 writeFileSync('README.md', `# edge-id2\n\n${readme}`)
