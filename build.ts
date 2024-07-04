@@ -47,6 +47,28 @@ const files = [
             .trim(),
     ],
     [
+        'lib/define.js',
+        (
+            await (
+                await Bun.build({
+                    entrypoints: ['define.ts'],
+                    minify: false,
+                })
+            ).outputs[0].text()
+        )
+    ],
+    [
+        'lib/format.js',
+        (
+            await (
+                await Bun.build({
+                    entrypoints: ['format.ts'],
+                    minify: false,
+                })
+            ).outputs[0].text()
+        )
+    ],
+    [
         'lib/index.js',
         (
             await (
