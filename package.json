@@ -1,16 +1,23 @@
 {
-  "name": "edge-id2",
+  "version": "0.0.1",
+  "name": "@kanamone/edge-id2",
   "scripts": {
     "prebuild": "bun run tsc --build",
     "build": "bun run build.ts",
-    "test": "jest"
+    "test": "jest",
+    "prepublishOnly": "bun run build",
+    "release": "changeset publish"
   },
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
     "lib"
   ],
+  "author": "AOKI Yuto <aoki@u-ne.co>",
+  "homepage": "https://github.com/kanamone/edge-id2",
+  "license": "MIT",
   "devDependencies": {
+    "@changesets/cli": "^2.27.7",
     "@types/bun": "latest",
     "@types/jest": "^29.5.12",
     "jest": "^29.7.0",
