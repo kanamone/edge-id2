@@ -2,37 +2,45 @@
 
 ## dist/define.js
 ```js
-function defineID(s) {
-  const i = [];
-  for (let r = 0;r < s.format.length; r++) {
-    const t = s.format[r], n = t.characters.split(""), e = t.repeats || 1;
-    for (let o = 0;o < e; o++)
-      i.push(n);
+function defineID(a) {
+  const o = [];
+  for (let r = 0;r < a.format.length; r++) {
+    const e = a.format[r], t = e.characters.split(""), i = e.repeats || 1;
+    for (let n = 0;n < i; n++)
+      o.push(t);
   }
-  const a = () => {
-    return s.format.map((r) => {
-      return r.characters.length ** (r.repeats || 1);
-    }).reduce((r, t) => r * t, 1);
-  }, c = i.map((r, t) => i.slice(t).reduce((n, e) => n * e.length, 1));
-  return { n: a, stringify: (r) => {
+  const l = a.format.map((r) => {
+    return r.characters.length ** (r.repeats || 1);
+  }).reduce((r, e) => r * e, 1), s = [];
+  for (let r = 0;r < o.length; r++)
+    s.push(o.slice(r).reduce((e, t) => e * t.length, 1));
+  return { n: l, stringify: (r) => {
     if (r < 0)
       throw new Error("negative number is not acceptable.");
-    if (a() < r + 1)
-      throw new Error(`number of ids exceeded. number of available ids = ${a()}`);
-    return c.map((n, e) => Math.floor(Number(r % n / (c[e + 1] || 1)))).map((n, e) => i[e][n]).join("");
+    if (l < r + 1)
+      throw new Error(`number of ids exceeded. number of available ids = ${l}`);
+    let e = "";
+    for (let t = 0;t < s.length; t++) {
+      const i = s[t], n = Math.floor(r % i / (s[t + 1] || 1));
+      e += o[t][n];
+    }
+    return e;
   }, parse: (r) => {
-    if (r.length !== i.length)
+    if (r.length !== o.length)
       throw new Error("invalid id length.");
-    let t;
-    const n = r.split("").map((e, o) => {
-      const f = i[o], m = f.indexOf(e);
-      if (m < 0)
-        t = new Error(`invalid id. '${e}' (index = ${o}) is not acceptable in [${f.join(", ")}].`);
-      return m * (c[o + 1] || 1);
+    let e;
+    const t = r.split("").map((n, c) => {
+      const f = o[c], h = f.indexOf(n);
+      if (h < 0)
+        e = new Error(`invalid id. '${n}' (index = ${c}) is not acceptable in [${f.join(", ")}].`);
+      return h * (s[c + 1] || 1);
     });
-    if (t)
-      throw t;
-    return n.reduce((e, o) => e + o, 0);
+    if (e)
+      throw e;
+    let i = 0;
+    for (let n = 0;n < t.length; n++)
+      i += t[n];
+    return i;
   } };
 }
 ```

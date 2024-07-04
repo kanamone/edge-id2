@@ -15,35 +15,45 @@ export function defineID(options: ConverterOptions) {
 		}
 	}
 
-	const n = (): number => {
-		return options.format
-			.map<number>((p) => {
-				return p.characters.length ** (p.repeats || 1);
-			})
-			.reduce((a, b) => a * b, 1);
-	}
+	const n = options.format
+		.map<number>((p) => {
+			return p.characters.length ** (p.repeats || 1);
+		})
+		.reduce((a, b) => a * b, 1);
 
-	const orders = sequence.map((_, i) => sequence.slice(i).reduce((a, b) => a * b.length, 1))
+	const orders: number[] = []
+
+	for (let i = 0; i < sequence.length; i++) {
+		orders.push(sequence.slice(i).reduce((a, b) => a * b.length, 1));
+	}
 
 	const stringify = (num: number): string => {
 		if (num < 0) {
 			throw new Error("negative number is not acceptable.");
 		}
-		if (n() < num + 1) {
+		if (n < num + 1) {
 			throw new Error(
-				`number of ids exceeded. number of available ids = ${n()}`,
+				`number of ids exceeded. number of available ids = ${n}`,
 			);
 		}
-		const digits = orders.map((o, i) => Math.floor(Number((num % o) / (orders[i + 1] || 1))));
-		return digits.map((d, i) => sequence[i][d]).join("");
-	}
+
+		let buf = "";
+
+		for (let i = 0; i < orders.length; i++) {
+			const o = orders[i];
+			const d = Math.floor((num % o) / (orders[i + 1] || 1));
+			buf += sequence[i][d];
+		}
+
+		return buf;
+	};
 
 	const parse = (id: string): number => {
 		if (id.length !== sequence.length) {
 			throw new Error("invalid id length.");
 		}
 
-        let error: Error | undefined;
+		let error: Error | undefined;
 		const digits = id.split("").map((c, i) => {
 			const pattern = sequence[i];
 			const n = pattern.indexOf(c);
@@ -57,12 +67,18 @@ export function defineID(options: ConverterOptions) {
 			return n * (orders[i + 1] || 1);
 		});
 
-        if (error) {
+		if (error) {
 			throw error;
 		}
 
-        return digits.reduce((total, n) => total + n, 0);
-	}
+		let total = 0;
+
+		for (let i = 0; i < digits.length; i++) {
+			total += digits[i];
+		}
+
+		return total;
+	};
 
 	return { n, stringify, parse };
 }
